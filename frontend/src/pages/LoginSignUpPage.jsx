@@ -4,20 +4,20 @@ import email_icon from '../assets/email.png'
 import password_icon from '../assets/password.png'
 import user_icon from '../assets/person.png'
 import { useAuth } from '../AuthContext'; 
-
+import { register,signin } from '../services/authService.js'
 
 const LoginSignUpPage = ()=>{
     const [action,setAction] = useState("Login");
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { login, signup, isLoading } = useAuth();
+    const { isLoading } = useAuth();
     
     const handleSubmit = () => {
     if (action === "Login") {
-        login(email, password);
+        signin(email, password);
     } else {
-        signup(email, password, name);
+        register(name, email, password);
     }
 };
     // FUNCTION: Switch between Login and Sign Up forms
@@ -33,7 +33,7 @@ const LoginSignUpPage = ()=>{
     return (
     
 
-    <div className='container'>
+    <form className = "container" onSubmit={(e)=>{e.preventDefault(); handleSubmit();}}>
         <div className='header'>
             <div className='text'>{action}</div>
             <div className="underline"></div>
@@ -67,15 +67,25 @@ const LoginSignUpPage = ()=>{
             
         </div> 
         {action==="Sign Up"?<div></div>:<div className="forgot-password">Forgot Password? <span>Click Here!</span></div>}
+        
+        
+        {/*empty div below is for space to display Invalid Password Message*/}
+        <div className='invalid-password'>
+            <br />
+            <text>Invalid Password!</text>    
+            <br />
+        </div>
+
+
         <div className="submit-container">
-                <div className={action==="Sign Up"?"submit gray":"submit"} onClick={()=>{setAction("Sign Up")}}>Sign Up</div>
-                <div className={action==="Login"?"submit gray":'submit'} onClick={()=>{setAction("Login")}}>Login</div>
+                <div className={action==="Sign Up"?"submit gray":"submit"} onClick={()=>{handleActionChange("Sign Up")}}>Sign Up</div>
+                <div className={action==="Login"?"submit gray":'submit'} onClick={()=>{handleActionChange("Login")}}>Login</div>
             </div>
 
         
         <div className="actual-submit">
                 <button 
-                    onClick={handleSubmit}           // Call our submit function
+                    type = "submit"           // Call our submit function
                     disabled={isLoading}             // Disable when processing
                     className="submit-button"
                 >
@@ -83,7 +93,7 @@ const LoginSignUpPage = ()=>{
                     {isLoading ? 'Processing...' : `${action} Now`}
                 </button>
             </div>
-        </div>
+        </form>
 
   );
 };

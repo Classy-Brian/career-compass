@@ -70,6 +70,12 @@ body {
     font-size: 19px;
 }
 
+.invalid-password{
+    padding-left: 70px;
+    margin-top: 27px;
+    color: rgb(12, 7, 147);
+    font-size: 18px;
+}
 .forgot-password {
     padding-left: 70px;
     margin-top: 27px;

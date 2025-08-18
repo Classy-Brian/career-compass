@@ -71,15 +71,38 @@ export const AuthProvider = ({ children }) => {
     // SIMULATE NETWORK DELAY
     setTimeout(() => {
       // CREATE USER OBJECT
-      const userData = {
+      /*const userData = {
         email: email,
         name: name
-      };
+      };*/
+
+      /*const response = fetch("https://localhost:5000/signup",{
+        method: "POST",
+        body: JSON
+        .stringify({
+            username: name,
+            email: email,
+            password:password
+        }),
+        headers:{
+            "Content-type":"application/json"
+        }
+
+        })
+        if (!response.ok){
+            console.error(`Login failed: ${response.statusText}`)
+        }
+        const data = response.json();
+        console.log("Signup successful:", data)
       
+      */
       // UPDATE STATE (same as login)
-      setUser(userData);
+      //setUser(userData);
+
+
       setIsLoggedIn(true);
-      localStorage.setItem('user', JSON.stringify(userData));
+      //localStorage.setItem('user', JSON.stringify(userData));
+
       setIsLoading(false);
     }, 1000);
   };
