@@ -2,11 +2,28 @@ import React, {useState} from "react";
 
 import { submitSurvey } from "../services/plannerService";
 
+const surveySteps = [
+  {
+    step: 1,
+    question: "What is your favorite subject?",
+    name: "favoriteSubject"
+  },
+  {
+    step: 2,
+    question: "What is your favorite hobby?",
+    name: "favoriteHobby"
+  },
+  {
+    step: 3,
+    question: "What are you passionate about?",
+    name: "passion"
+  }
+];
+const totalSteps = surveySteps.length;
+
 function CareerPathPage() {
-  const [answers, setAnswers] = useState({
-    question1: '',
-    question2: ''
-  });
+  const [currentStep, setCurrentStep] = useState(1);
+  const [answers, setAnswers] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -14,6 +31,18 @@ function CareerPathPage() {
       ...prevAnswers,
       [name]: value
     }));
+  };
+
+  const handleNext = () => {
+    if (currentStep < totalSteps) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -30,44 +59,39 @@ function CareerPathPage() {
     }
   };
 
+  const currentQuestion = surveySteps.find(step => step.step === currentStep);
+
   return (
     <div>
       <h1>Career Planner Survey</h1>
+      <p>Step {currentStep} of {totalSteps}</p>
+
       <form onSubmit={handleSubmit}>
         <div>
-          <label>What is your favorite  subject?</label>
+          <label>{currentQuestion.question}</label>
           <input
             type="text"
-            name="question1"
-            value={answers.question1}
+            name={currentQuestion.name}
+            value={answers[currentQuestion.name] || ''}
             onChange={handleChange}
           />
         </div>
+
         <div>
-          <label>What is your favorite hobby?</label>
-          <input
-            type="text"
-            name="question2"
-            value={answers.question2}
-            onChange={handleChange}
-          />
+          {currentStep > 1 && (
+            <button type="button" onClick={handlePrev}>Previous</button>
+          )}
+
+          {currentStep < totalSteps ? (
+            <button type="button" onClick={handleNext}>Next</button>
+          ) : (
+            <button type="submit">Submit</button>
+          )}
         </div>
-        <button type="submit">Submit</button>
+
       </form>
     </div>
   );
 }
 
 export default CareerPathPage;
-
-// export default function CareerPathPage() {
-//   return (
-//     <>
-//         <h1>CareerPath Page</h1>
-//         <p>This is the homepage of CareerPath.</p>
-
-//     </>
-
-
-//   );
-// }
