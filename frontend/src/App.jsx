@@ -5,39 +5,32 @@ import HomePage from './pages/HomePage';
 import ResumeCheckerPage from './pages/ResumeCheckerPage';
 import ChatbotPage from './pages/ChatBotPage';
 import CareerPathPage from './pages/CareerPathPage';
-import { AuthProvider, useAuth } from './AuthContext'; // Authentication system
+import { AuthProvider} from './AuthContext'; // Authentication system
 import LoginSignUpPage from './pages/LoginSignUpPage';       // Login/Signup form
 import Dashboard from './pages/Dashboard';             // Dashboard for logged-in users
+import ProtectedRoute  from './ProtectedRoute';
 
-
-// This component decides what to show based on authentication status
-const AppContent = () => {
-    // GET AUTHENTICATION STATUS from our context
-    const { isLoggedIn } = useAuth();
-    
-    // CONDITIONAL RENDERING
-    // This is the core logic: show different components based on login status
-    return isLoggedIn ? <Dashboard /> : <LoginSignUpPage />;
-    
-    // Translation: 
-    // - If user is logged in → show the dashboard
-    // - If user is NOT logged in → show the login/signup page
-};
 
 
 export default function App() {
   return (
     <BrowserRouter>
-    <AuthProvider>
+      <AuthProvider>
+    
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<HomePage />} /> 
           <Route path="resume-checker" element={<ResumeCheckerPage />} />
-          <Route path="login-signup" element={<AppContent />} />
+          <Route path="login-signup" element={<LoginSignUpPage />} />
           <Route path="chatbot" element={<ChatbotPage />} /> 
           <Route path="careerpath" element={<CareerPathPage />} /> 
+          <Route element = {<ProtectedRoute/>}> 
+            <Route path="dashboard" element={<Dashboard />} />
+          </Route>
         </Route>
+        
       </Routes>
+    
       </AuthProvider>
     </BrowserRouter>
   );

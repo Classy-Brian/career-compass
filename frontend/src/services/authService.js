@@ -1,6 +1,7 @@
 
 export async function register(user_name, user_email, user_password){
-    const response = await fetch("http://localhost:5000/signup",{
+    //work on encrpyting username, email, password
+    const response = await fetch("http://localhost:5000/api/signup",{
     method: "POST",
     body: JSON
     .stringify({
@@ -13,11 +14,10 @@ export async function register(user_name, user_email, user_password){
     }
 
     })
-    if (!response.ok){
-        console.error(`Sign up failed: ${response.statusText}`)
-    }
+    
     const data = await response.json();
-    console.log("Sign up successful:", data)
+    
+    console.log("Sign up response:", data)
     return data;
 
 
@@ -27,7 +27,7 @@ export async function register(user_name, user_email, user_password){
 
 
 export async function signin(user_email, user_password){
-    const response = await fetch("http://localhost:5000/login",{
+    const response = await fetch("http://localhost:5000/api/login",{
     method: "POST",
     body: JSON
     .stringify({
@@ -39,11 +39,9 @@ export async function signin(user_email, user_password){
     }
 
     })
-    if (!response.ok){
-        console.error(`Login failed: ${response.statusText}`)
-    }
+    
     const data = await response.json();
-    console.log("Login successful:", data)
+    console.log("Login response:", data)
     return data;
 
 

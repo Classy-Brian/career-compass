@@ -1,11 +1,62 @@
 // Import React and our authentication context
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useAuth } from '../AuthContext';
 import './Dashboard.css'; 
+import {Navigate} from "react-router-dom"
+
 
 const Dashboard = () => {
     // GET USER DATA AND LOGOUT FUNCTION from our authentication context
-    const { user, logout } = useAuth();
+    const { logout } = useAuth();
+    const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem('jwt_token');
+            if (!token || token == null){
+                logout();
+            }
+            try {
+                const response = await fetch("http://localhost:5000/api/dashboard-data", {
+                headers: {
+                "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok){
+                    const data = await response.json();
+                    setUserData(data);
+                    
+                }else if (response.status == 404){
+                    logout();
+                    console.error("User not found");
+                }else if (response.status ==405){
+                    console.error("Invalid request");
+                }else if (response.status ==401){
+                    
+                    console.error("Invalid token");
+                }else{
+                    const error = await response.json();
+                    console.log("Error:", error);
+                    console.error("Unexpected error");
+                    }
+            }catch (err){
+                console.error("Network error:", err);
+            }finally{
+                setLoading(false);
+            }
+        };
+
+        fetchUserData();
+
+        
+    }, [logout]);
+
+
+    if (loading) return <div>Loading...</div>;
+    if (!userData) return <div>No user data available</div>;
 
     return (
         <div className="dashboard"> {/* Changed from style={styles.dashboard} to className */}
@@ -25,19 +76,19 @@ const Dashboard = () => {
             {/* MAIN CONTENT SECTION */}
             <div className="dashboard-content"> {/* Changed from style={styles.content} */}
                 {/* PERSONALIZED GREETING using user's name from context */}
-                <h2>Hello, {user.name}! </h2>
+                <h2>Hello, {userData.username}! </h2>
                 <p>You are successfully logged in.</p>
                 
                 {/* USER INFORMATION DISPLAY */}
                 <div className="user-info"> {/* Changed from style={styles.userInfo} */}
                     <h3>Your Information:</h3>
                     {/* Display the user data we stored during login/signup */}
-                    <p><strong>Name:</strong> {user.name}</p>
-                    <p><strong>Email:</strong> {user.email}</p>
+                    <p><strong>Name:</strong> {userData.username}</p>
+                    <p><strong>Email:</strong> {userData.email}</p>
                 </div>
             </div>
         </div>
     );
-};
+}
 
 export default Dashboard;

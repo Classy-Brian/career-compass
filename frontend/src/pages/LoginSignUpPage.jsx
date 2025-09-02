@@ -1,23 +1,54 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './LoginSignUp.css'
 import email_icon from '../assets/email.png' 
 import password_icon from '../assets/password.png'
 import user_icon from '../assets/person.png'
-import { useAuth } from '../AuthContext'; 
-import { register,signin } from '../services/authService.js'
+import { AuthProvider, useAuth } from '../AuthContext'; 
+import {useNavigate, useLocation} from "react-router-dom"
+
+//import { register,signin } from '../services/authService.js'
 
 const LoginSignUpPage = ()=>{
     const [action,setAction] = useState("Login");
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { isLoading } = useAuth();
+    const { isLoading} = useAuth();
+    const {login,signup, }= useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+
+     const from = location.state?.from?.pathname || "/dashboard";
+    useEffect(() => {
+
+    //check if user is already logged in, if so redirect to page they want to visit
+    if (localStorage.getItem('jwt_token')) {
+        navigate(from, {replace:true});         
+    }
     
-    const handleSubmit = () => {
+  }, []);
+
+
+   
+
+    
+    
+
+    const handleSubmit = async () => {
     if (action === "Login") {
-        signin(email, password);
+        await login(email,password);
+        navigate(from, {replace:true});
+
+        
+        
+
+    
+
     } else {
-        register(name, email, password);
+        await signup(email, password, name);
+        
+         
     }
 };
     // FUNCTION: Switch between Login and Sign Up forms
@@ -69,12 +100,7 @@ const LoginSignUpPage = ()=>{
         {action==="Sign Up"?<div></div>:<div className="forgot-password">Forgot Password? <span>Click Here!</span></div>}
         
         
-        {/*empty div below is for space to display Invalid Password Message*/}
-        <div className='invalid-password'>
-            <br />
-            <text>Invalid Password!</text>    
-            <br />
-        </div>
+        
 
 
         <div className="submit-container">

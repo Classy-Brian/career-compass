@@ -246,3 +246,4 @@ yarn-debug.log*
 
 # Others
 backend/.flaskenv
+backend/.env

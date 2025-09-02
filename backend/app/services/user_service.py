@@ -1,7 +1,7 @@
-from app import db
+from extensions import db
 from app.models.user import User
 
-def create_user(email, password):
+def create_user(email, password, name):
     """
     Creates a new user and adds them to the database.
     """
@@ -10,7 +10,7 @@ def create_user(email, password):
     if User.query.filter_by(email=email).first():
         return None
     
-    new_user = User(email=email)
+    new_user = User(email=email,name = name)
     new_user.set_password(password)
 
     db.session.add(new_user)
