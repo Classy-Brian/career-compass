@@ -21,6 +21,13 @@ const surveySteps = [
   },
   {
     step: 3,
+    question: "Which of these best describes your ideal work environment?",
+    name: "workEnvironment",
+    type: "multiple-choice",
+    options: ["Collaboratice office", "Quiete solo space", "Flexible remote work"]
+  },
+  {
+    step: 4,
     question: "What is your favorite hobby?",
     name: "favoriteHobby",
     type: "text"
@@ -66,9 +73,30 @@ function CareerPathPage() {
     }
   };
 
+  const handleOptionClick = (questionName, optionValue) => {
+    setAnswers(prev => ({ ...prev, [questionName]: optionValue }));
+  };
+
   const currentQuestion = surveySteps.find(step => step.step === currentStep);
 
   const renderInput = () => {
+    if (currentQuestion.type === 'multiple-choice') {
+      return (
+        <div className="multiple-choice-options">
+          {currentQuestion.options.map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => handleOptionClick(currentQuestion.name, option)}
+              className={answers[currentQuestion.name] === option ? 'selected' : ''}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      );
+    }
+
     if (currentQuestion.type === 'scale') {
       return (
         <div className="scale-input">
