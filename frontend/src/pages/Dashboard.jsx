@@ -10,6 +10,7 @@ const Dashboard = () => {
     const { logout } = useAuth();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error_flag, setError_flag] = useState(false);
 
     
     useEffect(() => {
@@ -25,25 +26,32 @@ const Dashboard = () => {
                     }
                 });
 
+                //check response for errors
                 if (response.ok){
                     const data = await response.json();
                     setUserData(data);
                     
+                    
                 }else if (response.status == 404){
                     logout();
                     console.error("User not found");
+                    setError_flag(true);
                 }else if (response.status ==405){
                     console.error("Invalid request");
-                }else if (response.status ==401){
+                    setError_flag(true);
+                }else if (response.status == 422 || response.status == 401){
                     
-                    console.error("Invalid token");
+                    console.error("Invalid Access Token")
+                    logout(); //deletes token in local storage and resets states
+                    setError_flag(true);
                 }else{
                     const error = await response.json();
-                    console.log("Error:", error);
-                    console.error("Unexpected error");
+                    console.error("Unexpected Error:", error);
+                    setError_flag(true);
                     }
             }catch (err){
                 console.error("Network error:", err);
+                setError_flag(true);
             }finally{
                 setLoading(false);
             }
@@ -56,7 +64,12 @@ const Dashboard = () => {
 
 
     if (loading) return <div>Loading...</div>;
-    if (!userData) return <div>No user data available</div>;
+    if (!userData && !error_flag){
+        alert("No user data available. Redirecting to Login/Signup page")
+        return logout();
+
+        
+    }
 
     return (
         <div className="dashboard"> {/* Changed from style={styles.dashboard} to className */}

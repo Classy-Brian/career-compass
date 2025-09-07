@@ -19,13 +19,14 @@ def signup():
         email = data['email']
         password = data['password']
 
+
         new_user_obj = create_user(email,password, username)
 
         #error if email is already used
         if not new_user_obj:
             return jsonify({}), 409 #"Error": "Email already in use"
         else:
-            return jsonify({}), 201 #"User created successfully"
+            return jsonify({"Response":"Successful Signup"}), 201 #"User created successfully"
 
     else:
         return jsonify({}),405
@@ -56,7 +57,7 @@ def login():
 
 @api.route('/dashboard-data',methods = ['GET'])
 @jwt_required()
-def jwt_token_validation():
+def dashboard():
     if request.method  == "GET":
         user_email = get_jwt_identity()
 
@@ -67,4 +68,4 @@ def jwt_token_validation():
             return jsonify({}), 404 #User not found
       
     else:
-        return jsonify({}), 405
+        return jsonify({}), 405 #error code: method not allowed

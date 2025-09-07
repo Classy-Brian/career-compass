@@ -121,6 +121,7 @@ export const AuthProvider = ({ children }) => {
           if (response.ok){
             const data = await response.json();
             console.log("Sign up response:", data);
+            
           }else if (response.status == 409){
             alert('Signup failed: Email already in use');
           }else if (response.status == 405){
@@ -146,7 +147,7 @@ export const AuthProvider = ({ children }) => {
     
     setIsLoggedIn(false); // Mark as not logged in
     
-    navigate("/LoginSignUpPage");
+    navigate("/login-signup");
   };
 
   // WHAT WE SHARE WITH OTHER COMPONENTS

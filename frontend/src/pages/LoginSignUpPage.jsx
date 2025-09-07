@@ -14,20 +14,22 @@ const LoginSignUpPage = ()=>{
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { isLoading} = useAuth();
-    const {login,signup, }= useAuth();
+    const {login,signup }= useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
 
      const from = location.state?.from?.pathname || "/dashboard";
     useEffect(() => {
+        
 
     //check if user is already logged in, if so redirect to page they want to visit
     if (localStorage.getItem('jwt_token')) {
-        navigate(from, {replace:true});         
+        navigate(from, {replace:true}); 
+
     }
     
-  }, []);
+  }, [from, navigate]);
 
 
    
@@ -47,6 +49,12 @@ const LoginSignUpPage = ()=>{
 
     } else {
         await signup(email, password, name);
+        //clear input form and state vars after user submission for signup
+        document.getElementById("input-form").reset()
+        setName('');
+        setEmail('');
+        setPassword('');
+
         
          
     }
@@ -64,7 +72,7 @@ const LoginSignUpPage = ()=>{
     return (
     
 
-    <form className = "container" onSubmit={(e)=>{e.preventDefault(); handleSubmit();}}>
+    <form className = "container" id = "input-form" onSubmit={(e)=>{e.preventDefault(); handleSubmit();}}>
         <div className='header'>
             <div className='text'>{action}</div>
             <div className="underline"></div>
@@ -72,7 +80,7 @@ const LoginSignUpPage = ()=>{
         <div className='inputs'>
             {action ==="Login"?<div></div>:<div className='input'>
                 <img src={user_icon} alt=""/>
-                <input type="text" placeholder='Name'
+                <input type="text" placeholder='Name' id = "username-input"
                     value = {name}
                     onChange={(e)=> setName(e.target.value)}
                 />
@@ -81,7 +89,7 @@ const LoginSignUpPage = ()=>{
             
             <div className='input'>
                 <img src={email_icon} alt=""/>
-                <input type="email" placeholder='Email Address'
+                <input type="email" placeholder='Email Address' id ="email-input"
                     value = {email}
                     onChange={(e)=> setEmail(e.target.value)}
                 />
@@ -89,7 +97,7 @@ const LoginSignUpPage = ()=>{
             </div>
             <div className="input">
                 <img src={password_icon} alt=""/>
-                <input type="password"placeholder='Password'
+                <input type="password"placeholder='Password' id = "password-input"
                     value = {password}
                     onChange={(e)=> setPassword(e.target.value)}
                     />
